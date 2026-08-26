@@ -1,0 +1,3 @@
+Listen to the following audio and describe the speaker's vocal style and paralinguistic characteristics. Do not transcribe the spoken words.
+
+<<__AUDIO_EMBEDDINGS_08E8F7E7__>>

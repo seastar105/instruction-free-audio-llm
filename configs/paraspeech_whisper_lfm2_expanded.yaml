@@ -1,0 +1,32 @@
+extends: paraspeech_whisper_lfm2.yaml
+
+run:
+  name: paraspeech-whisper-large-v2-lfm2-expanded-projector
+  output_dir: runs/paraspeech-whisper-large-v2-lfm2-expanded-projector
+
+data:
+  target_type: audio_assistant_response
+  target_provider: caption_expansion_overlay
+  expansion_decoder_lock: "${ENV:CAPTION_EXPANSION_DECODER_LOCK}"
+  expansion_recipe_sha256: "${ENV:CAPTION_EXPANSION_RECIPE_SHA256}"
+  review_status_allowlist:
+    - unreviewed
+    - accepted
+
+prompt:
+  mode: caption_expansion_alignment
+  prompt_file: null
+  system_message: null
+  require_no_system_message: true
+  user_content: audio_sentinel_only
+
+frontend:
+  model_id: openai/whisper-large-v2
+  revision: main
+
+projector:
+  stack_factor: 4
+
+optimization:
+  learning_rate: 0.001
+  min_learning_rate: 0.0001

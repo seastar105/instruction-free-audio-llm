@@ -1,0 +1,148 @@
+format_version: 1
+benchmarks:
+  voicebench:
+    dataset_id: hlt-lab/voicebench
+    revision: b02edcef1330480be3a11bd6f7434ac32f05ad08
+    subsets:
+      - alpacaeval_full
+      - commoneval
+      - wildvoice
+      - sd-qa
+      - mmsu
+      - openbookqa
+      - bbh
+      - ifeval
+      - advbench
+    split: test
+    question_mode: audio_only
+    official_format: voicebench_jsonl
+    audio_patterns: ["{subset}/*.parquet", "README.md"]
+    scorer_repo: https://github.com/MatthewCYM/VoiceBench.git
+    scorer_revision: 3c3b0d3a7a956f745305eb348f5e03ce7ec73dad
+    judge_provider: openai
+    judge_model: gpt-4o-mini
+    judge_subsets: [alpacaeval_full, commoneval, wildvoice, sd-qa]
+
+  mmau:
+    dataset_id: gamma-lab-umd/MMAU-test-mini
+    revision: ccd9696c0111ea7060827598f310558df0b71b0a
+    subsets: [default]
+    split: test
+    question_mode: text_question
+    official_format: mmau_json
+    audio_patterns: ["test_mini.parquet", "README.md"]
+    scorer_repo: https://github.com/Sakshi113/MMAU.git
+    scorer_revision: 110127f54c0dfba3faa5ec9feee4a7e4148679c5
+
+  mmsu:
+    dataset_id: ddwang2000/MMSU
+    revision: 548e2283105825bf908a7db5c09c00dbcf42bd4c
+    subsets: [default]
+    split: train
+    question_mode: text_question
+    official_format: mmsu_jsonl
+    audio_patterns: ["data/*.parquet", "audio/*", "README.md"]
+    scorer_repo: https://github.com/dingdongwang/MMSU.git
+    scorer_revision: 217d1d3f5ad59203ed16f44c0fd913f4f8add2b4
+
+  mmau-pro:
+    dataset_id: gamma-lab-umd/MMAU-Pro
+    revision: b8516c217464d53be36d6dc334fda3cd578ed103
+    subsets: [default]
+    split: test
+    question_mode: text_question
+    official_format: mmau_pro_parquet
+    audio_patterns: ["test.parquet", "data.zip", "README.md"]
+    scorer_repo: https://github.com/sonalkum/MMAUPro.git
+    scorer_revision: 960e93a415e2267e987ae242516e21030a7d45dc
+    supports_multiple_audio: true
+
+  mmar:
+    dataset_id: BoJack/MMAR
+    revision: 3bd051123480e80d273ae9e8e9f1653f49010ac7
+    subsets: [default]
+    split: test
+    question_mode: text_question
+    official_format: mmar_jsonl
+    audio_patterns: ["MMAR-meta.json", "mmar-audio.tar.gz", "README.md"]
+    scorer_repo: https://github.com/ddlBoJack/MMAR.git
+    scorer_revision: 3bce090a967db576c8ad433b290a8da582d6d2a0
+
+  kvoicebench:
+    dataset_id: KRAFTON/KVoiceBench
+    revision: 58da882807d7f214fb2f222c9e3bd76910bed8b8
+    subsets:
+      - alpacaeval_full-test
+      - commoneval-test
+      - wildvoice-test
+      - sd-qa
+      - mmsu
+      - openbookqa-test
+      - bbh-test
+      - ifeval-test
+      - advbench-test
+    split: test
+    question_mode: audio_only
+    official_format: keval_jsonl
+    audio_patterns: ["{subset}/*.parquet", "README.md"]
+    scorer_repo: https://github.com/krafton-ai/Raon-Eval.git
+    scorer_revision: 96a36a4a101add8c6bab20d0613c69123eb76332
+    judge_provider: openai
+    judge_model: gpt-5.4
+    judge_subsets:
+      - alpacaeval_full-test
+      - commoneval-test
+      - wildvoice-test
+      - sd-qa
+      - mmsu
+      - openbookqa-test
+      - bbh-test
+
+  kmmau:
+    dataset_id: KRAFTON/KMMAU
+    revision: b10351b8b662e64444b4ec419e3484346e9ef17e
+    subsets:
+      - age
+      - gender
+      - number_of_speakers
+      - fact_extraction
+      - general_counting
+      - role_profession
+      - topic_summary
+      - word_frequency_counting
+      - word_order
+    split: test
+    question_mode: text_question
+    official_format: keval_jsonl
+    audio_patterns: ["{subset}/*.parquet", "README.md"]
+    scorer_repo: https://github.com/krafton-ai/Raon-Eval.git
+    scorer_revision: 96a36a4a101add8c6bab20d0613c69123eb76332
+    judge_provider: openai
+    judge_model: gpt-5.4
+    judge_subsets:
+      - age
+      - gender
+      - number_of_speakers
+      - fact_extraction
+      - general_counting
+      - role_profession
+      - topic_summary
+      - word_frequency_counting
+      - word_order
+
+  voicebench-ja:
+    dataset_id: sbintuitions/voicebench-ja
+    revision: 1fde075546ccf5c6273076659a45894a12861176
+    subsets: [elyza, spoken-elyza, m-ifeval, jamc-qa]
+    split: test
+    question_mode: audio_only
+    official_format: flexeval_jsonl
+    audio_patterns:
+      - "{subset}/*.parquet"
+      - "{subset}-flexeval-metrics.jsonnet"
+      - README.md
+    scorer_repo: https://github.com/sbintuitions/flexeval.git
+    scorer_revision: 50e4abbb0e0043c787a991557be7c405058a38f8
+    judge_provider: openai
+    judge_model: gpt-4o-2024-08-06
+    judge_subsets: [elyza, spoken-elyza]

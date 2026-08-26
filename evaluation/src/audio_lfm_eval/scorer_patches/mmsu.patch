@@ -1,0 +1,72 @@
+diff --git a/mmsu_evaluation.py b/mmsu_evaluation.py
+index 5ad46a3..0aa0f99 100644
+--- a/mmsu_evaluation.py
++++ b/mmsu_evaluation.py
+@@ -34,9 +34,9 @@ def calculate_accuracy_per_task_and_category(data):
+         response = record.get('response', '')
+         try:
+             predict = response.strip().replace('\n', '')
+-        except:
+-            print('Error prediction!')
+-            continue
++        except Exception:
++            print('Error prediction! Counting the response as incorrect.')
++            predict = ''
+ 
+         if predict != 'None' and predict:
+             if predict[0] == 'A' or predict[0] == 'B' or predict[0] == 'C' or predict[0] == 'D':
+@@ -45,12 +45,9 @@ def calculate_accuracy_per_task_and_category(data):
+             elif len(predict) > 1:
+                 if predict[-2] == 'A' or predict[-2] == 'B' or predict[-2] == 'C' or predict[-2] == 'D':
+                     model_predict = predict[-2]
+-                else:
+-                    print(f'Wrong format response: {predict}')
+-                    continue
+-            else:
+-                print(f'Wrong format response: {predict}')
+-                continue
++
++        if model_predict is None:
++            fail_num += 1
+         
+         # Get the correct answer
+         answer_gt = record.get('answer_gt', '')
+@@ -102,7 +99,13 @@ def calculate_accuracy_per_task_and_category(data):
+     # Calculate overall accuracy
+     overall_accuracy = total_correct / total_count if total_count > 0 else 0
+ 
+-    return task_category_accuracy, task_average_accuracy, overall_accuracy, total_count
++    return (
++        task_category_accuracy,
++        task_average_accuracy,
++        overall_accuracy,
++        total_count,
++        fail_num,
++    )
+ 
+ def main():
+     """Main function to load data, calculate accuracy, and print results."""
+@@ -115,7 +118,13 @@ def main():
+     data = load_jsonl_data(args.jsonl_path)
+ 
+     # Calculate accuracy
+-    task_category_accuracies, task_average_accuracies, overall_accuracy, total_count = calculate_accuracy_per_task_and_category(data)
++    (
++        task_category_accuracies,
++        task_average_accuracies,
++        overall_accuracy,
++        total_count,
++        fail_num,
++    ) = calculate_accuracy_per_task_and_category(data)
+ 
+     # Print accuracy for each category and sub-category
+     for task, categories in task_category_accuracies.items():
+@@ -130,6 +139,7 @@ def main():
+     # Print overall accuracy
+     print(f'Overall Accuracy: {overall_accuracy:.4f}')
+     print(f'Total count: {total_count}')
++    print(f'Unparseable responses counted as incorrect: {fail_num}')
+ 
+ 
+ if __name__ == "__main__":
+

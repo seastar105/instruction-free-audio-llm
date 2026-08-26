@@ -1,0 +1,368 @@
+{
+  "format_version": 1,
+  "checkpoint": "6k",
+  "model": "audio-lfm-6k",
+  "generation": {
+    "max_tokens": 1024,
+    "repetition_penalty": 1.05,
+    "seed": 0,
+    "temperature": 0.1,
+    "top_k": 50,
+    "top_p": 1.0
+  },
+  "transport": "vllm-openai-http",
+  "scoring_policy": {
+    "unparseable_model_responses": "count_as_zero_in_full_denominator",
+    "unparseable_judge_responses": "count_as_zero_in_full_denominator",
+    "voicebench_sdqa_panda": "omitted_due_to_mutable_pickle_deserialization",
+    "mmau_pro_closed_ended_nvembed": "omitted_by_request"
+  },
+  "judges": {
+    "mmau_pro_open": {
+      "model": "Qwen/Qwen2.5-7B-Instruct",
+      "backend": "vllm"
+    },
+    "voicebench_open_and_sdqa": {
+      "model": "gpt-4o-mini",
+      "backend": "openai_api"
+    },
+    "kvoicebench_and_kmmau": {
+      "model": "gpt-5.4",
+      "backend": "openai_api"
+    }
+  },
+  "benchmarks": {
+    "mmau": {
+      "accuracy": 0.22399999999999998,
+      "num_samples": 1000
+    },
+    "mmsu": {
+      "accuracy": 0.1838,
+      "num_samples": 5000,
+      "unparseable_counted_as_incorrect": 2106
+    },
+    "mmau_pro": {
+      "weighted_score": 0.5925140449438202,
+      "evaluation_scope": "open_and_instruction_following",
+      "evaluated_samples": 712,
+      "total_samples": 5305,
+      "omitted_closed_samples": 4593,
+      "categories": {
+        "open": {
+          "type": "openended",
+          "count": 625,
+          "performance_score": 0.649392,
+          "metrics": {
+            "avg_correctness": 2.9504,
+            "std_correctness": 1.4748355298134095,
+            "avg_relevance": 3.3376,
+            "std_relevance": 1.4868847433476475,
+            "avg_completeness": 2.7952,
+            "std_completeness": 1.434314107857829,
+            "avg_clarity": 3.8176,
+            "std_clarity": 1.1546125930371625,
+            "avg_overall": 3.24696,
+            "std_overall": 1.2550101985242987,
+            "good_response_rate": 0.3888,
+            "poor_response_rate": 0.1776
+          }
+        },
+        "instruction following": {
+          "type": "aif",
+          "count": 87,
+          "performance_score": 0.1839080459770115,
+          "success_rate": 0.1839080459770115
+        }
+      },
+      "omitted_official_metrics": [
+        "closed_ended_nvembed"
+      ]
+    },
+    "mmar": {
+      "accuracy": 0.253,
+      "num_samples": 1000
+    },
+    "voicebench": {
+      "alpacaeval_full": {
+        "gpt": 1.121069182389937
+      },
+      "commoneval": {
+        "gpt": 1.2166666666666666
+      },
+      "wildvoice": {
+        "gpt": 1.086
+      },
+      "sd-qa": {
+        "gpt": 0.0,
+        "panda": null,
+        "num_samples": 553,
+        "complete_official_sdqa": false,
+        "omitted_official_metrics": [
+          "panda"
+        ],
+        "reason": "qa_metrics.PEDANT downloads mutable pickle files and deserializes them with joblib; only the official GPT majority-vote metric was run"
+      },
+      "mmsu": {
+        "acc": 0.03253090435914119,
+        "fail": 99.93493819128172
+      },
+      "openbookqa": {
+        "acc": 0.0,
+        "fail": 100.0
+      },
+      "bbh": {
+        "acc": 30.4
+      },
+      "ifeval": {
+        "strict-prompt": 0.06666666666666667,
+        "strict-instruction": 0.14859437751004015,
+        "loose-prompt": 0.06956521739130435,
+        "loose-instruction": 0.15461847389558234,
+        "final": 0.10986118386589838
+      },
+      "advbench": {
+        "refusal_rate": 0.009615384615384616
+      }
+    },
+    "kvoicebench": {
+      "subsets": {
+        "advbench-test": {
+          "refusal_rate": {
+            "value": 0.0,
+            "count": 513
+          }
+        },
+        "alpacaeval_full-test": {
+          "judge_open_ended_QA": {
+            "value": 1.003257328990228,
+            "count": 614
+          },
+          "refusal_rate": {
+            "value": 0.0,
+            "count": 614
+          }
+        },
+        "bbh-test": {
+          "accuracy": {
+            "value": 13.2,
+            "count": 750
+          },
+          "refusal_rate": {
+            "value": 0.0,
+            "count": 750
+          }
+        },
+        "commoneval-test": {
+          "judge_open_ended_QA": {
+            "value": 1.0,
+            "count": 194
+          },
+          "refusal_rate": {
+            "value": 0.0,
+            "count": 194
+          }
+        },
+        "ifeval-test": {
+          "instruction_accuracy": {
+            "value": 0.16069295101553166,
+            "count": 279
+          },
+          "loose_instruction_accuracy": {
+            "value": 0.16069295101553166,
+            "count": 279
+          },
+          "loose_prompt_accuracy": {
+            "value": 0.08960573476702509,
+            "count": 279
+          },
+          "prompt_accuracy": {
+            "value": 0.08960573476702509,
+            "count": 279
+          },
+          "refusal_rate": {
+            "value": 0.0,
+            "count": 279
+          },
+          "strict_instruction_accuracy": {
+            "value": 0.16069295101553166,
+            "count": 279
+          },
+          "strict_prompt_accuracy": {
+            "value": 0.08960573476702509,
+            "count": 279
+          },
+          "total_accuracy": {
+            "value": 0.12514934289127838,
+            "count": 279
+          }
+        },
+        "mmsu": {
+          "correct_format": {
+            "value": 1.0,
+            "count": 3006
+          },
+          "exact_match": {
+            "value": 0.0,
+            "count": 3006
+          },
+          "exact_match_correct_format": {
+            "value": 0.0,
+            "count": 3006
+          },
+          "refusal_rate": {
+            "value": 0.0,
+            "count": 3006
+          }
+        },
+        "openbookqa-test": {
+          "correct_format": {
+            "value": 1.0,
+            "count": 445
+          },
+          "exact_match": {
+            "value": 0.0,
+            "count": 445
+          },
+          "exact_match_correct_format": {
+            "value": 0.0,
+            "count": 445
+          },
+          "refusal_rate": {
+            "value": 0.0,
+            "count": 445
+          }
+        },
+        "sd-qa": {
+          "judge_reference_based_QA": {
+            "value": 0.0,
+            "count": 533
+          },
+          "refusal_rate": {
+            "value": 0.0,
+            "count": 533
+          }
+        },
+        "wildvoice-test": {
+          "judge_open_ended_QA": {
+            "value": 1.0020576131687242,
+            "count": 972
+          },
+          "refusal_rate": {
+            "value": 0.0,
+            "count": 972
+          }
+        }
+      }
+    },
+    "kmmau": {
+      "subsets": {
+        "age": {
+          "accuracy": {
+            "value": 0.31521739130434784,
+            "count": 276
+          }
+        },
+        "fact_extraction": {
+          "accuracy": {
+            "value": 0.20408163265306123,
+            "count": 98
+          }
+        },
+        "gender": {
+          "accuracy": {
+            "value": 0.6370370370370371,
+            "count": 270
+          }
+        },
+        "general_counting": {
+          "accuracy": {
+            "value": 0.1951219512195122,
+            "count": 41
+          }
+        },
+        "number_of_speakers": {
+          "accuracy": {
+            "value": 0.3,
+            "count": 100
+          }
+        },
+        "role_profession": {
+          "accuracy": {
+            "value": 0.34,
+            "count": 100
+          }
+        },
+        "topic_summary": {
+          "accuracy": {
+            "value": 0.25,
+            "count": 100
+          }
+        },
+        "word_frequency_counting": {
+          "accuracy": {
+            "value": 0.36666666666666664,
+            "count": 180
+          }
+        },
+        "word_order": {
+          "accuracy": {
+            "value": 0.40230991337824834,
+            "count": 1039
+          }
+        }
+      },
+      "weighted_accuracy": 0.39019963702359345,
+      "num_samples": 2204
+    },
+    "voicebench_ja": {
+      "elyza": {
+        "llm_score": 1.0277777777777777,
+        "num_failed_score_parses": 0
+      },
+      "jamc-qa": {
+        "exact_match": 0.0
+      },
+      "m-ifeval": {
+        "format_accuracy-macro": 0.2441860465116279,
+        "format_accuracy-micro": 0.3230088495575221,
+        "format_accuracy-ResponseLanguage": 0.0,
+        "format_accuracy-NumberOfSentences": 0.5714285714285714,
+        "format_accuracy-PlaceholderConstraint": 0.0,
+        "format_accuracy-BulletListChecker": 0.0,
+        "format_accuracy-NumberedList": 0.0,
+        "format_accuracy-ConstrainedResponse": 0.0,
+        "format_accuracy-HighlightSection": 0.0,
+        "format_accuracy-SectionChecker": 0.0,
+        "format_accuracy-ParagraphChecker": 0.0,
+        "format_accuracy-PostscriptChecker": 0.0,
+        "format_accuracy-KeywordChecker": 0.0,
+        "format_accuracy-KeywordFrequency": 0.2857142857142857,
+        "format_accuracy-NumberOfLetters": 0.42857142857142855,
+        "format_accuracy-JsonFormat": 0.0,
+        "format_accuracy-ParagraphFirstWordCheck": 0.0,
+        "format_accuracy-ForbiddenWords": 1.0,
+        "format_accuracy-TwoResponses": 0.0,
+        "format_accuracy-RepeatPromptThenAnswer": 0.0,
+        "format_accuracy-EndChecker": 0.0,
+        "format_accuracy-TitleChecker": 0.0,
+        "format_accuracy-LetterFrequency": 0.4,
+        "format_accuracy-FuriganaForKanji": 1.0,
+        "format_accuracy-PeriodChecker": 1.0,
+        "format_accuracy-CommaChecker": 1.0,
+        "format_accuracy-QuotationChecker": 0.0,
+        "format_accuracy-KanjiLimit": 0.42857142857142855,
+        "format_accuracy-NoHiragana": 1.0,
+        "format_accuracy-HiraganaOnly": 0.0,
+        "format_accuracy-NoKatakana": 1.0,
+        "format_accuracy-KatakanaOnly": 0.0,
+        "format_accuracy-SentenceEndingUnification": 0.0,
+        "format_accuracy-NominalEnding": 0.7142857142857143,
+        "format_accuracy-KanjiNumberNotation": 1.0
+      },
+      "spoken-elyza": {
+        "llm_score": 1.0,
+        "num_failed_score_parses": 0
+      }
+    }
+  }
+}

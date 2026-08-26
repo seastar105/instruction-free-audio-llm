@@ -1,0 +1,11 @@
+extends: paraspeech_whisper_lfm2.yaml
+frontend:
+  kind: dmel
+  sample_rate: 16000
+  max_seconds: 30.0
+projector:
+  kind: dmel_patch_mlp
+  dmel_bin_embedding_dim: 16
+  temporal_patch_size: 8
+  hidden_dim: 2048
+  use_trainable_audio_boundary_vectors: true

@@ -1,0 +1,54 @@
+run:
+  name: paraspeech-whisper-small-lfm2-vllm-eval
+  seed: 1337
+  output_dir: runs/vllm-eval
+  prediction_part_size: 256
+  write_jsonl: true
+  write_parquet: true
+model:
+  export_dir: exports/paraspeech-whisper-small-lfm2-vllm
+vllm:
+  required_version: "0.27.1"
+  dtype: bfloat16
+  tensor_parallel_size: 1
+  pipeline_parallel_size: 1
+  max_model_len: 2048
+  gpu_memory_utilization: 0.80
+  max_num_seqs: 4
+  max_num_batched_tokens: 4096
+  enforce_eager: true
+  enable_prefix_caching: false
+  enable_mm_embeds: false
+  limit_mm_per_prompt: {audio: 1}
+  mm_processor_cache_gb: 1
+  mm_processor_cache_type: lru
+  audio_encoder_microbatch_size: 4
+data:
+  backend: captionstew
+  captionstew_root: "${ENV:CAPTIONSTEW_ROOT}"
+  dataset: ParaSpeechCaps-Base
+  split: dev
+  target_type: style_caption
+  input_mode: whisper_features
+  num_workers: 2
+  persistent_workers: true
+  prefetch_factor: 2
+  prefetch_request_chunks: 2
+  request_chunk_max_items: 64
+  request_chunk_max_audio_seconds: 240.0
+  max_audio_seconds: 30.0
+  long_audio_policy: skip
+  strict_audio_contract: true
+generation:
+  temperature: 0.1
+  top_p: 1.0
+  top_k: 50
+  repetition_penalty: 1.05
+  max_tokens: 1024
+  seed: 0
+  stop_token_ids: null
+evaluation:
+  max_audio_items: null
+  include_reference_text_in_predictions: true
+  include_transcript_in_predictions: false
+  fail_on_duplicate_audio_id: true

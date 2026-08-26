@@ -1,0 +1,116 @@
+diff --git a/src/evaluator/bbh.py b/src/evaluator/bbh.py
+index 69d5aa8..64e9804 100644
+--- a/src/evaluator/bbh.py
++++ b/src/evaluator/bbh.py
+@@ -1,8 +1,7 @@
+-import re
+-
+-from .base import Evaluator
+-import numpy as np
+-import random
++import re
++
++from .base import Evaluator
++import numpy as np
+
+ class BBHEvaluator(Evaluator):
+     def extract_answer(self, response, id):
+@@ -451,9 +450,7 @@ class BBHEvaluator(Evaluator):
+         elif response.startswith('b)'):
+             return 1
+         else:
+-            print([response])
+-            print('==========================================')
+-            return random.choice([0,1])
++            return None
+
+     def extract_answer_yn(self, response):
+         if "answer is no" in response:
+@@ -586,9 +583,7 @@ class BBHEvaluator(Evaluator):
+         elif response.endswith('yes'):
+             return 1
+         else:
+-            print(response)
+-            print('==========================================')
+-            return random.choice([0,1])
++            return None
+
+     def extract_answer_navigate(self, response):
+         tmp = self.extract_answer_yn(response)
+@@ -673,9 +668,7 @@ class BBHEvaluator(Evaluator):
+         elif response.endswith('yes'):
+             return 1
+         else:
+-            print([response])
+-            print('==========================================')
+-            return random.choice([0,1])
++            return None
+
+     def extract_answer_sports(self, response):
+         tmp = self.extract_answer_yn(response)
+@@ -824,9 +817,7 @@ class BBHEvaluator(Evaluator):
+         elif response.endswith('yes'):
+             return 1
+         else:
+-            print([response])
+-            print('==========================================')
+-            return random.choice([0,1])
++            return None
+
+     def evaluate(self, data):
+         ground_truth_mapping = {
+diff --git a/src/evaluator/mcq.py b/src/evaluator/mcq.py
+index da85d5c..6d708bb 100644
+--- a/src/evaluator/mcq.py
++++ b/src/evaluator/mcq.py
+@@ -1,6 +1,5 @@
+ from .base import Evaluator
+ import numpy as np
+-import random
+
+ class MCQEvaluator(Evaluator):
+     def extract_answer(self, response):
+@@ -201,7 +200,6 @@ class MCQEvaluator(Evaluator):
+         cnt = 0
+         for idx in range(len(preds)):
+             if preds[idx] == None:
+-                preds[idx] = random.choice(['A', 'B', 'C', 'D'])
+                 cnt += 1
+         correct_predictions = sum([1 for pred, gt in zip(preds, ground_truth) if pred == gt])
+         total_predictions = len(ground_truth)
+@@ -209,4 +207,3 @@ class MCQEvaluator(Evaluator):
+         return {
+             'acc': accuracy * 100, 'fail': 100 * cnt / len(preds)
+         }
+-
+diff --git a/src/evaluator/open.py b/src/evaluator/open.py
+index 3590287..02592c6 100644
+--- a/src/evaluator/open.py
++++ b/src/evaluator/open.py
+@@ -21,11 +21,10 @@ def extract_rating(llm_output):
+
+     if match:
+         # Convert the matched rating to an integer and return it
+-        return int(match.group(1))
++        rating = int(match.group(1))
++        return rating if 1 <= rating <= 5 else 0
+     else:
+-        # Return None if no rating is found
+-        # return None
+-        raise NotImplementedError
++        return 0
+
+
+ class OpenEvaluator(Evaluator):
+@@ -35,8 +34,9 @@ class OpenEvaluator(Evaluator):
+             for score in item['score']:
+                 try:
+                     score = float(score)
+-                except Exception as e:
++                    if not 1 <= score <= 5:
++                        score = 0
++                except Exception:
+                     score = extract_rating(score)
+                 scores.append(score)
+         return {'gpt': np.mean(scores)}
+-

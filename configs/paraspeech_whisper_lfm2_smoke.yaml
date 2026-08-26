@@ -1,0 +1,18 @@
+extends: paraspeech_whisper_lfm2.yaml
+run:
+  name: paraspeech-whisper-small-lfm2-smoke
+  output_dir: runs/paraspeech-whisper-small-lfm2-smoke
+  checkpoint_every_updates: 10
+  eval_every_updates: 10
+data:
+  sample_shuffle: 16
+  num_workers: 1
+  persistent_workers: false
+packing:
+  max_lfm_tokens: 512
+  planning_buffer_examples: 8
+  max_examples_per_pack: 2
+optimization:
+  target_input_tokens_per_update: 512
+  warmup_updates: 2
+  max_updates: 20

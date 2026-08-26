@@ -1,0 +1,332 @@
+diff --git a/flexeval/core/metric/llm_geval_score.py b/flexeval/core/metric/llm_geval_score.py
+index f2eaa6d..0da7790 100644
+--- a/flexeval/core/metric/llm_geval_score.py
++++ b/flexeval/core/metric/llm_geval_score.py
+@@ -65,18 +65,20 @@ def summarize_evaluator_geval_scores(
+     """
+
+     # compute overall mean score
+-    all_valid_scores: list[int] = [s for s in evaluator_score_list if s is not None]
+-    llm_score = None if len(all_valid_scores) == 0 else sum(all_valid_scores) / len(all_valid_scores)
+-    num_failed_score_parses = len(evaluator_score_list) - len(all_valid_scores)
++    num_failed_score_parses = sum(s is None for s in evaluator_score_list)
++    denominator_scores = [0.0 if s is None else s for s in evaluator_score_list]
++    llm_score = sum(denominator_scores) / len(denominator_scores)
+     summary = {"llm_geval_score": llm_score, "num_failed_score_parses": num_failed_score_parses}
+
+     # compute category-wise mean score if category_key is given
+     category2valid_scores: dict[str, list[int]] = defaultdict(list)
+     for score, extra_info in zip(evaluator_score_list, extra_info_list):
+-        if score is None or category_key is None:
++        if category_key is None:
+             continue
+         if category_key in extra_info:
+-            category2valid_scores[extra_info[category_key]].append(score)
++            category2valid_scores[extra_info[category_key]].append(
++                0.0 if score is None else score
++            )
+
+     category2mean_score: dict[str, float] = {}
+     for category, valid_scores in category2valid_scores.items():
+diff --git a/flexeval/core/metric/llm_label.py b/flexeval/core/metric/llm_label.py
+index 0665ea0..ea544b4 100644
+--- a/flexeval/core/metric/llm_label.py
++++ b/flexeval/core/metric/llm_label.py
+@@ -33,11 +33,11 @@ def parse_label_from_evaluator_output(evaluator_output: str, label_names: list[s
+     return parsed_label
+
+
+-def calc_label_dist(valid_labels: list[int], label_names: list[str]) -> dict[str, float]:
+-    counter = Counter(valid_labels)
++def calc_label_dist(labels: list[str | None], label_names: list[str]) -> dict[str, float]:
++    counter = Counter(labels)
+     dist_dict: dict[str, float] = {}
+     for label in label_names:
+-        dist_dict[label] = counter.get(label, 0.0) / len(valid_labels)
++        dist_dict[label] = counter.get(label, 0.0) / len(labels)
+     return dist_dict
+
+
+@@ -56,17 +56,19 @@ def summarize_evaluator_labels(
+
+     label2point = dict(zip(label_names, weights))
+     # compute overall mean score and label distribution
+-    all_valid_labels: list[int] = [label for label in evaluator_label_list if label is not None]
+-    score = sum([label2point[label] for label in all_valid_labels])
+-    score /= len(all_valid_labels)
+-    dist = calc_label_dist(all_valid_labels, label_names)
+-    num_failed_score_parses = len(evaluator_label_list) - len(all_valid_labels)
++    num_failed_score_parses = sum(label is None for label in evaluator_label_list)
++    score = sum(
++        0.0 if label is None else label2point[label]
++        for label in evaluator_label_list
++    )
++    score /= len(evaluator_label_list)
++    dist = calc_label_dist(evaluator_label_list, label_names)
+     summary = {score_key: score, dist_key: dist, "num_failed_score_parses": num_failed_score_parses}
+
+     # compute category-wise stats if category_key is given
+-    category2valid_labels: dict[str, list[str]] = defaultdict(list)
++    category2valid_labels: dict[str, list[str | None]] = defaultdict(list)
+     for label, extra_info in zip(evaluator_label_list, extra_info_list):
+-        if label is None or category_key is None:
++        if category_key is None:
+             continue
+         if category_key in extra_info:
+             category2valid_labels[extra_info[category_key]].append(label)
+@@ -74,7 +76,10 @@ def summarize_evaluator_labels(
+     category2mean_score: dict[str, float] = {}
+     category2dist: dict[str, float] = {}
+     for category, valid_labels in category2valid_labels.items():
+-        score = sum([label2point[label] for label in valid_labels])
++        score = sum(
++            0.0 if label is None else label2point[label]
++            for label in valid_labels
++        )
+         score /= len(valid_labels)
+         category2mean_score[category] = score
+         category2dist[category] = calc_label_dist(valid_labels, label_names)
+diff --git a/flexeval/core/metric/llm_score.py b/flexeval/core/metric/llm_score.py
+index 4880b4e..d86422d 100644
+--- a/flexeval/core/metric/llm_score.py
++++ b/flexeval/core/metric/llm_score.py
+@@ -41,9 +41,9 @@ def summarize_evaluator_scores(
+     """
+
+     # compute overall mean score
+-    all_valid_scores: list[int] = [s for s in evaluator_score_list if s is not None]
+-    llm_score = sum(all_valid_scores) / len(all_valid_scores)
+-    num_failed_score_parses = len(evaluator_score_list) - len(all_valid_scores)
++    num_failed_score_parses = sum(s is None for s in evaluator_score_list)
++    denominator_scores = [0 if s is None else s for s in evaluator_score_list]
++    llm_score = sum(denominator_scores) / len(denominator_scores)
+     summary = {"llm_score": llm_score, "num_failed_score_parses": num_failed_score_parses}
+
+     # compute category-wise mean score if category_key is given
+@@ -54,14 +54,13 @@ def summarize_evaluator_scores(
+         for key in keys_to_check:
+             category2valid_scores: dict[str, list[int]] = defaultdict(list)
+             for score, extra_info in zip(evaluator_score_list, extra_info_list):
+-                if score is None:
+-                    continue
++                denominator_score = 0 if score is None else score
+                 if key in extra_info:
+                     categories = extra_info[key]
+                     if not isinstance(categories, (list, tuple, set)):
+                         categories = [categories]
+                     for category in categories:
+-                        category2valid_scores[category].append(score)
++                        category2valid_scores[category].append(denominator_score)
+
+             # Add category-wise scores for this key
+             for category, valid_scores in category2valid_scores.items():
+diff --git a/tests/core/metric/test_llm_geval_score.py b/tests/core/metric/test_llm_geval_score.py
+index da60b7b..0924bf1 100644
+--- a/tests/core/metric/test_llm_geval_score.py
++++ b/tests/core/metric/test_llm_geval_score.py
+@@ -75,7 +75,7 @@ def test_calculate_weighted_average(
+             ],
+             None,
+             {
+-                "llm_geval_score": pytest.approx(3.0, rel=1e-5),
++                "llm_geval_score": pytest.approx(2.25, rel=1e-5),
+                 "num_failed_score_parses": 1,
+             },
+         ),
+@@ -144,7 +144,7 @@ def test_llm_geval_score(
+             ],
+             None,
+             {
+-                "llm_geval_score": pytest.approx(3.0, rel=1e-5),
++                "llm_geval_score": pytest.approx(2.25, rel=1e-5),
+                 "num_failed_score_parses": 1,
+             },
+         ),
+diff --git a/tests/core/metric/test_llm_label.py b/tests/core/metric/test_llm_label.py
+index 0385fe7..c45670c 100644
+--- a/tests/core/metric/test_llm_label.py
++++ b/tests/core/metric/test_llm_label.py
+@@ -49,9 +49,9 @@ def test_parse_label_from_evaluator_output(
+             ["This is Good.", "This is Neutral.", "This is Bad.", "This is Great."],
+             None,
+             {
+-                "llm_score": 0.5,
++                "llm_score": 0.375,
+                 "num_failed_score_parses": 1,
+-                "llm_label_distribution": {"Good": 1 / 3, "Neutral": 1 / 3, "Bad": 1 / 3},
++                "llm_label_distribution": {"Good": 1 / 4, "Neutral": 1 / 4, "Bad": 1 / 4},
+             },
+         ),
+         (
+@@ -63,13 +63,15 @@ def test_parse_label_from_evaluator_output(
+                 {"category": "category-2"},
+             ],
+             {
+-                "llm_score": 0.5,
+-                "llm_label_distribution": {"Good": 1 / 3, "Neutral": 1 / 3, "Bad": 1 / 3},
++                "llm_score": 0.375,
++                "llm_label_distribution": {"Good": 1 / 4, "Neutral": 1 / 4, "Bad": 1 / 4},
+                 "num_failed_score_parses": 1,
+                 "llm_score/category-0": 0.75,
+                 "llm_label_distribution/category-0": {"Good": 1 / 2, "Neutral": 1 / 2, "Bad": 0 / 2},
+                 "llm_score/category-1": 0.0,
+                 "llm_label_distribution/category-1": {"Good": 0 / 1, "Neutral": 0 / 1, "Bad": 1 / 1},
++                "llm_score/category-2": 0.0,
++                "llm_label_distribution/category-2": {"Good": 0.0, "Neutral": 0.0, "Bad": 0.0},
+             },
+         ),
+     ],
+@@ -111,9 +113,9 @@ def test_llm_label(
+             ["This is Good.", "This is Neutral.", "This is Bad.", "This is Great."],
+             None,
+             {
+-                "llm_score": 0.5,
++                "llm_score": 0.375,
+                 "num_failed_score_parses": 1,
+-                "llm_label_distribution": {"Good": 1 / 3, "Neutral": 1 / 3, "Bad": 1 / 3},
++                "llm_label_distribution": {"Good": 1 / 4, "Neutral": 1 / 4, "Bad": 1 / 4},
+             },
+         ),
+         (
+@@ -125,13 +127,15 @@ def test_llm_label(
+                 {"category": "category-2"},
+             ],
+             {
+-                "llm_score": 0.5,
+-                "llm_label_distribution": {"Good": 1 / 3, "Neutral": 1 / 3, "Bad": 1 / 3},
++                "llm_score": 0.375,
++                "llm_label_distribution": {"Good": 1 / 4, "Neutral": 1 / 4, "Bad": 1 / 4},
+                 "num_failed_score_parses": 1,
+                 "llm_score/category-0": 0.75,
+                 "llm_label_distribution/category-0": {"Good": 1 / 2, "Neutral": 1 / 2, "Bad": 0 / 2},
+                 "llm_score/category-1": 0.0,
+                 "llm_label_distribution/category-1": {"Good": 0 / 1, "Neutral": 0 / 1, "Bad": 1 / 1},
++                "llm_score/category-2": 0.0,
++                "llm_label_distribution/category-2": {"Good": 0.0, "Neutral": 0.0, "Bad": 0.0},
+             },
+         ),
+     ],
+diff --git a/tests/core/metric/test_llm_score.py b/tests/core/metric/test_llm_score.py
+index 38b9703..53d7b1d 100644
+--- a/tests/core/metric/test_llm_score.py
++++ b/tests/core/metric/test_llm_score.py
+@@ -61,14 +61,14 @@ def test_parse_score_from_evaluator_output(
+         (
+             ["This score is 1.", "This score is 2.", "This is a good one."],
+             {
+-                "llm_score": 1.5,
++                "llm_score": 1.0,
+                 "num_failed_score_parses": 1,
+             },
+         ),
+         (
+             ["This score is 1.", "This score is 2.", "This score is 3.", "This is a good one."],
+             {
+-                "llm_score": 2.0,
++                "llm_score": 1.5,
+                 "num_failed_score_parses": 1,
+             },
+         ),
+@@ -106,9 +106,10 @@ def test_llm_score(
+             ],
+             "category",
+             {
+-                "llm_score": 1.5,
++                "llm_score": 1.0,
+                 "num_failed_score_parses": 1,
+                 "llm_score/category/category-0": 1.5,
++                "llm_score/category/category-1": 0.0,
+             },
+         ),
+         (
+@@ -121,10 +122,11 @@ def test_llm_score(
+             ],
+             "category",
+             {
+-                "llm_score": 2.0,
++                "llm_score": 1.5,
+                 "num_failed_score_parses": 1,
+                 "llm_score/category/category-0": 1.5,
+                 "llm_score/category/category-1": 2.0,
++                "llm_score/category/": 0.0,
+             },
+         ),
+         (
+@@ -177,7 +179,7 @@ def test_llm_score_with_category_key(
+             ["This score is [[1]].", "This score is 2.", "This score is 3.", "This is a good one."],
+             r"(\d+)",
+             {
+-                "llm_score": 2.0,
++                "llm_score": 1.5,
+                 "num_failed_score_parses": 1,
+             },
+         ),
+@@ -185,7 +187,7 @@ def test_llm_score_with_category_key(
+             ["This score is [[1]].", "This score is 2.", "This score is 3.", "This is a good one."],
+             r"\[\[(\d+)\]\]",
+             {
+-                "llm_score": 1.0,
++                "llm_score": 0.25,
+                 "num_failed_score_parses": 3,
+             },
+         ),
+@@ -258,14 +260,14 @@ def test_llm_score_metric_prefix(lm_outputs: list[str | LMOutput], metric_prefix
+         (
+             ["This score is 1.", "This score is 2.", "This is a good one."],
+             {
+-                "llm_score": 1.5,
++                "llm_score": 1.0,
+                 "num_failed_score_parses": 1,
+             },
+         ),
+         (
+             ["This score is 1.", "This score is 2.", "This score is 3.", "This is a good one."],
+             {
+-                "llm_score": 2.0,
++                "llm_score": 1.5,
+                 "num_failed_score_parses": 1,
+             },
+         ),
+@@ -335,9 +337,10 @@ def test_chat_llm_score_reasoning() -> None:
+             ],
+             "category",
+             {
+-                "llm_score": 1.5,
++                "llm_score": 1.0,
+                 "num_failed_score_parses": 1,
+                 "llm_score/category/category-0": 1.5,
++                "llm_score/category/category-1": 0.0,
+             },
+         ),
+         (
+@@ -350,10 +353,11 @@ def test_chat_llm_score_reasoning() -> None:
+             ],
+             "category",
+             {
+-                "llm_score": 2.0,
++                "llm_score": 1.5,
+                 "num_failed_score_parses": 1,
+                 "llm_score/category/category-0": 1.5,
+                 "llm_score/category/category-1": 2.0,
++                "llm_score/category/": 0.0,
+             },
+         ),
+         (
+@@ -406,7 +410,7 @@ def test_chat_llm_score_with_category_key(
+             ["This score is [[1]].", "This score is 2.", "This score is 3.", "This is a good one."],
+             r"(\d+)",
+             {
+-                "llm_score": 2.0,
++                "llm_score": 1.5,
+                 "num_failed_score_parses": 1,
+             },
+         ),
+@@ -414,7 +418,7 @@ def test_chat_llm_score_with_category_key(
+             ["This score is [[1]].", "This score is 2.", "This score is 3.", "This is a good one."],
+             r"\[\[(\d+)\]\]",
+             {
+-                "llm_score": 1.0,
++                "llm_score": 0.25,
+                 "num_failed_score_parses": 3,
+             },
+         ),

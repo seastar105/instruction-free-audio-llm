@@ -1,0 +1,50 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "audio-lfm-eval"
+version = "0.1.0"
+description = "Isolated benchmark adapters for the Audio LFM vLLM export"
+readme = "README.md"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+  "duckdb>=1.4,<2",
+  "httpx>=0.28,<1",
+  "numpy>=1.26,<2.5",
+  "pyarrow>=22,<24",
+  "pyyaml>=6,<7",
+  "scipy>=1.13,<2",
+  "soundfile>=0.13,<1",
+  "transformers==5.15.1",
+  "typer>=0.15,<1",
+]
+
+[project.optional-dependencies]
+dev = [
+  "mypy>=1.14",
+  "pytest>=8.3",
+  "ruff>=0.9",
+]
+
+[project.scripts]
+audio-lfm-eval = "audio_lfm_eval.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/audio_lfm_eval"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+packages = ["audio_lfm_eval"]
+ignore_missing_imports = true

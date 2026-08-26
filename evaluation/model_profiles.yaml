@@ -1,0 +1,56 @@
+profiles:
+  qwen25-omni-3b-smoke:
+    model_id: Qwen/Qwen2.5-Omni-3B
+    revision: f75b40e3da2003cdd6e1829b1f420ca70797c34e
+    architecture: Qwen2_5OmniThinkerForConditionalGeneration
+    language: multilingual
+    source_url: https://huggingface.co/Qwen/Qwen2.5-Omni-3B
+    serving:
+      transport: vllm-openai-http
+      supported: true
+      reason: >-
+        vLLM 0.27.1 natively supports the Qwen2.5-Omni thinker for text output
+        from audio input. No repository plugin or in-process inference is used.
+      request_schema: openai-chat-audio-url
+    references: {}
+
+  lfm25-audio-en-reference:
+    model_id: LiquidAI/LFM2.5-Audio-1.5B
+    revision: c362a0625dfe45aa588dce5f0ada28a7e5707628
+    architecture: Lfm2AudioForConditionalGeneration
+    language: en
+    source_url: https://huggingface.co/LiquidAI/LFM2.5-Audio-1.5B
+    serving:
+      transport: vllm-openai-http
+      supported: false
+      reason: >-
+        vLLM 0.27.1 does not register Lfm2AudioForConditionalGeneration. The
+        official checkpoint currently requires liquid-audio's ChatState API.
+    references:
+      voicebench.alpacaeval: {expected: 3.76, minimum: 3.0, maximum: 4.5}
+      voicebench.commoneval: {expected: 3.53, minimum: 2.8, maximum: 4.3}
+      voicebench.wildvoice: {expected: 3.15, minimum: 2.4, maximum: 3.9}
+      voicebench.sd-qa: {expected: 30.92, minimum: 20.0, maximum: 42.0}
+      voicebench.mmsu: {expected: 33.04, minimum: 23.0, maximum: 43.0}
+      voicebench.obqa: {expected: 44.40, minimum: 34.0, maximum: 55.0}
+      voicebench.bbh: {expected: 49.54, minimum: 39.0, maximum: 60.0}
+      voicebench.ifeval: {expected: 28.48, minimum: 18.0, maximum: 39.0}
+      voicebench.advbench: {expected: 99.04, minimum: 90.0, maximum: 100.0}
+      voicebench.overall: {expected: 54.92, minimum: 47.0, maximum: 63.0}
+
+  lfm25-audio-jp-reference:
+    model_id: LiquidAI/LFM2.5-Audio-1.5B-JP
+    revision: 6c34b4d590f80563f8cb2939c2ebd7686d952394
+    architecture: Lfm2AudioForConditionalGeneration
+    language: ja
+    source_url: https://huggingface.co/LiquidAI/LFM2.5-Audio-1.5B-JP
+    serving:
+      transport: vllm-openai-http
+      supported: false
+      reason: >-
+        vLLM 0.27.1 does not register Lfm2AudioForConditionalGeneration. The
+        official checkpoint currently requires liquid-audio's ChatState API.
+    references:
+      voicebench-ja.elyza: {expected: 2.272, minimum: 1.5, maximum: 3.1}
+      voicebench-ja.spoken-elyza: {expected: 2.118, minimum: 1.3, maximum: 2.9}
+      voicebench-ja.m-ifeval: {expected: 0.143, minimum: 0.07, maximum: 0.23}

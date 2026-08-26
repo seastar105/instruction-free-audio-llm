@@ -1,0 +1,76 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "audio-lfm"
+version = "0.1.0"
+description = "Projector-only audio language-model training for LFM2.5"
+readme = "README.md"
+requires-python = ">=3.11,<3.13"
+license = { file = "LICENSE" }
+dependencies = [
+  "huggingface-hub>=0.30",
+  "numpy>=1.26,<2.5",
+  "pandas>=2.2",
+  "pyarrow>=17",
+  "pydantic>=2.8",
+  "pyyaml>=6",
+  "rich>=13",
+  "safetensors>=0.5",
+  "soundfile>=0.12",
+  "tensorboard>=2.18",
+  "transformers==5.15.1",
+  "typer>=0.15",
+  "webdataset>=0.2.100",
+  "zstandard>=0.23",
+]
+
+[project.optional-dependencies]
+dev = ["mypy>=1.14", "pytest>=8.3", "pytest-xdist>=3.6", "ruff>=0.9"]
+dmel = ["dmel"]
+
+[project.scripts]
+audio-lfm = "audio_lfm.cli:app"
+
+[project.entry-points."vllm.general_plugins"]
+audio_lfm2 = "audio_lfm.vllm_plugin:register"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/audio_lfm"]
+
+[tool.pytest.ini_options]
+addopts = "--strict-markers"
+testpaths = ["tests"]
+markers = [
+  "gpu: requires a CUDA GPU",
+  "private_data: requires HF_TOKEN and private CaptionStew data",
+  "vllm: requires the isolated vLLM environment",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+packages = ["audio_lfm"]
+warn_unreachable = true
+ignore_missing_imports = true
+disallow_untyped_decorators = false
+
+[[tool.mypy.overrides]]
+module = ["audio_lfm.vllm_plugin.*"]
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = [
+  "audio_lfm.cli",
+  "audio_lfm.model.*",
+  "audio_lfm.training.engine",
+]
+disable_error_code = ["attr-defined", "arg-type", "assignment", "call-overload", "index", "no-any-return", "no-untyped-call", "operator", "union-attr"]

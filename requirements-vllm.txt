@@ -1,0 +1,12 @@
+pyarrow
+pandas
+webdataset
+soundfile
+safetensors
+zstandard
+pyyaml
+pydantic>=2
+typer
+rich
+numpy
+tensorboard

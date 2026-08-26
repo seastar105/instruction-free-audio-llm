@@ -1,0 +1,30 @@
+server:
+  host: 127.0.0.1
+  port: 8000
+  api_server_count: 4
+  dtype: bfloat16
+  max_model_len: 32768
+  gpu_memory_utilization: 0.85
+  max_num_seqs: 128
+  max_num_batched_tokens: 131072
+  audio_limit: 3
+  max_audio_decode_duration_seconds: 720
+  audio_encoder_microbatch_size: 32
+  startup_timeout_seconds: 600
+generation:
+  max_tokens: 1024
+  temperature: 0.1
+  top_p: 1.0
+  top_k: 50
+  repetition_penalty: 1.05
+  seed: 0
+client:
+  request_concurrency: 128
+  http_max_connections: 256
+  max_inflight_audio_seconds: 7200.0
+  request_timeout_seconds: 600
+  max_audio_seconds: 720.0
+  max_model_len: 32768
+  audio_chunk_seconds: 30.0
+  audio_stack_factor: 4
+  text_prompt_token_reserve: 1024

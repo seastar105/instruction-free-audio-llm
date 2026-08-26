@@ -1,0 +1,104 @@
+run:
+  name: paraspeech-whisper-small-lfm2-projector
+  seed: 1337
+  output_dir: runs/paraspeech-whisper-small-lfm2-projector
+  log_every_updates: 10
+  checkpoint_every_updates: 250
+  eval_every_updates: 250
+  keep_last_checkpoints: 3
+  fail_on_oom: true
+  deterministic_algorithms: false
+data:
+  backend: captionstew
+  captionstew_root: "${ENV:CAPTIONSTEW_ROOT}"
+  dataset: ParaSpeechCaps-Base
+  train_split: train_base
+  validation_split: dev
+  final_split: holdout
+  target_type: style_caption
+  target_sampling: one_per_audio_per_epoch
+  metadata_source: parquet
+  shard_shuffle: 53
+  sample_shuffle: 256
+  num_workers: 2
+  persistent_workers: true
+  prefetch_factor: 2
+  max_bad_samples: 0
+  strict_audio_contract: true
+  strict_target_consistency: false
+  max_audio_seconds: 30.0
+  long_audio_policy: skip
+  duration_sidecar: null
+  preserve_provenance: true
+  review_status_allowlist: null
+  target_provider: official_target
+prompt:
+  mode: direct_caption_alignment
+  prompt_file: configs/prompts/paraspeech_style_caption.txt
+  audio_sentinel: "<<__AUDIO_EMBEDDINGS_08E8F7E7__>>"
+  system_message: null
+  require_no_system_message: false
+  user_content: prompt_file
+  supervise_assistant_termination: true
+frontend:
+  kind: whisper
+  model_id: openai/whisper-small
+  revision: main
+  dtype: bfloat16
+  mode: variable_length_masked
+  feature_extraction_device: cpu
+  max_seconds: 30.0
+  encoder_microbatch_max_padded_samples: 960000
+projector:
+  kind: frame_stack_mlp
+  stack_factor: 5
+  hidden_dim: 2048
+  activation: gelu
+  dropout: 0.0
+  use_input_layer_norm: true
+  use_output_rms_norm: true
+  use_trainable_audio_boundary_vectors: true
+  initialize_to_text_embedding_rms: true
+llm:
+  model_id: LiquidAI/LFM2.5-1.2B-Instruct
+  revision: main
+  dtype: bfloat16
+  attention_implementation: flash_attention_2
+  trust_remote_code: false
+  use_cache: false
+  gradient_checkpointing: true
+  gradient_checkpointing_use_reentrant: false
+  allow_frozen_llm_dropout: false
+packing:
+  enabled: true
+  max_lfm_tokens: 2048
+  planning_buffer_examples: 64
+  max_examples_per_pack: 8
+  best_fit_decreasing: true
+  require_boundary_kernel_tests: true
+optimization:
+  optimizer: adamw
+  fused: true
+  learning_rate: 0.0003
+  min_learning_rate: 0.00003
+  weight_decay: 0.01
+  beta1: 0.9
+  beta2: 0.95
+  epsilon: 1.0e-8
+  max_grad_norm: 1.0
+  warmup_updates: 500
+  max_updates: 20000
+  target_input_tokens_per_update: 8192
+  max_microbatches_per_update: 32
+evaluation:
+  validation_max_audio_items: null
+  final_eval_enabled_during_training: false
+  generation_examples: 32
+  generation_max_new_tokens: 128
+  generation_do_sample: false
+checkpoint:
+  save_optimizer: true
+  save_scheduler: true
+  save_rng: true
+  save_committed_audio_ids: true
+  atomic_write: true

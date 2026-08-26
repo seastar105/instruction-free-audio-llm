@@ -1,0 +1,311 @@
+{
+  "format_version": 1,
+  "seed": 1337,
+  "epoch": 0,
+  "logical_examples": 518819,
+  "dataset_examples": {
+    "ParaSpeechCaps-Base": 116516,
+    "WavCaps": 402303
+  },
+  "duration_hours": 7795.136530428241,
+  "total_lfm_input_tokens": 385835362,
+  "mean_lfm_tokens_per_example": 743.6800926720108,
+  "length_quantiles": {
+    "p50": 194,
+    "p90": 1529,
+    "p95": 2705,
+    "p99": 7786,
+    "max": 838917
+  },
+  "planner_by_buffer": {
+    "256": {
+      "4096": {
+        "packs_or_optimizer_steps": 57341,
+        "usable_examples": 504848,
+        "oversized_examples": 13971,
+        "utilization": 0.9806446908284975,
+        "mean_examples_per_pack": 8.804311051429169,
+        "ideal_token_lower_bound": 56232
+      },
+      "8192": {
+        "packs_or_optimizer_steps": 35371,
+        "usable_examples": 514014,
+        "oversized_examples": 4805,
+        "utilization": 0.9704189545891674,
+        "mean_examples_per_pack": 14.532074298153855,
+        "ideal_token_lower_bound": 34325
+      },
+      "12288": {
+        "packs_or_optimizer_steps": 25560,
+        "usable_examples": 516042,
+        "oversized_examples": 2777,
+        "utilization": 0.9594938577682821,
+        "mean_examples_per_pack": 20.18943661971831,
+        "ideal_token_lower_bound": 24525
+      },
+      "16384": {
+        "packs_or_optimizer_steps": 20194,
+        "usable_examples": 516927,
+        "oversized_examples": 1892,
+        "utilization": 0.9488800009536403,
+        "mean_examples_per_pack": 25.59804892542339,
+        "ideal_token_lower_bound": 19162
+      },
+      "24576": {
+        "packs_or_optimizer_steps": 14440,
+        "usable_examples": 517734,
+        "oversized_examples": 1085,
+        "utilization": 0.9300241260757517,
+        "mean_examples_per_pack": 35.85415512465374,
+        "ideal_token_lower_bound": 13430
+      },
+      "32768": {
+        "packs_or_optimizer_steps": 11406,
+        "usable_examples": 518093,
+        "oversized_examples": 726,
+        "utilization": 0.9098651851872781,
+        "mean_examples_per_pack": 45.42284762405751,
+        "ideal_token_lower_bound": 10378
+      }
+    },
+    "512": {
+      "4096": {
+        "packs_or_optimizer_steps": 56845,
+        "usable_examples": 504848,
+        "oversized_examples": 13971,
+        "utilization": 0.9892012880076854,
+        "mean_examples_per_pack": 8.881132905268712,
+        "ideal_token_lower_bound": 56232
+      },
+      "8192": {
+        "packs_or_optimizer_steps": 34870,
+        "usable_examples": 514014,
+        "oversized_examples": 4805,
+        "utilization": 0.9843615957204886,
+        "mean_examples_per_pack": 14.740866073989102,
+        "ideal_token_lower_bound": 34325
+      },
+      "12288": {
+        "packs_or_optimizer_steps": 25047,
+        "usable_examples": 516042,
+        "oversized_examples": 2777,
+        "utilization": 0.9791457262170037,
+        "mean_examples_per_pack": 20.60294646065397,
+        "ideal_token_lower_bound": 24525
+      },
+      "16384": {
+        "packs_or_optimizer_steps": 19665,
+        "usable_examples": 516927,
+        "oversized_examples": 1892,
+        "utilization": 0.9744054278798786,
+        "mean_examples_per_pack": 26.286651411136535,
+        "ideal_token_lower_bound": 19162
+      },
+      "24576": {
+        "packs_or_optimizer_steps": 13929,
+        "usable_examples": 517734,
+        "oversized_examples": 1085,
+        "utilization": 0.9641430383038161,
+        "mean_examples_per_pack": 37.169502476846866,
+        "ideal_token_lower_bound": 13430
+      },
+      "32768": {
+        "packs_or_optimizer_steps": 10894,
+        "usable_examples": 518093,
+        "oversized_examples": 726,
+        "utilization": 0.9526273455338805,
+        "mean_examples_per_pack": 47.557646410868365,
+        "ideal_token_lower_bound": 10378
+      }
+    },
+    "1024": {
+      "4096": {
+        "packs_or_optimizer_steps": 56575,
+        "usable_examples": 504848,
+        "oversized_examples": 13971,
+        "utilization": 0.9939221779371962,
+        "mean_examples_per_pack": 8.923517454706142,
+        "ideal_token_lower_bound": 56232
+      },
+      "8192": {
+        "packs_or_optimizer_steps": 34604,
+        "usable_examples": 514014,
+        "oversized_examples": 4805,
+        "utilization": 0.9919283563395399,
+        "mean_examples_per_pack": 14.854178707663854,
+        "ideal_token_lower_bound": 34325
+      },
+      "12288": {
+        "packs_or_optimizer_steps": 24794,
+        "usable_examples": 516042,
+        "oversized_examples": 2777,
+        "utilization": 0.9891370091375854,
+        "mean_examples_per_pack": 20.813180608211663,
+        "ideal_token_lower_bound": 24525
+      },
+      "16384": {
+        "packs_or_optimizer_steps": 19425,
+        "usable_examples": 516927,
+        "oversized_examples": 1892,
+        "utilization": 0.986444413861406,
+        "mean_examples_per_pack": 26.611428571428572,
+        "ideal_token_lower_bound": 19162
+      },
+      "24576": {
+        "packs_or_optimizer_steps": 13685,
+        "usable_examples": 517734,
+        "oversized_examples": 1085,
+        "utilization": 0.9813334585702488,
+        "mean_examples_per_pack": 37.832225063938616,
+        "ideal_token_lower_bound": 13430
+      },
+      "32768": {
+        "packs_or_optimizer_steps": 10631,
+        "usable_examples": 518093,
+        "oversized_examples": 726,
+        "utilization": 0.9761943657460346,
+        "mean_examples_per_pack": 48.73417364311918,
+        "ideal_token_lower_bound": 10378
+      }
+    },
+    "2048": {
+      "4096": {
+        "packs_or_optimizer_steps": 56432,
+        "usable_examples": 504848,
+        "oversized_examples": 13971,
+        "utilization": 0.9964407998440047,
+        "mean_examples_per_pack": 8.94612985540119,
+        "ideal_token_lower_bound": 56232
+      },
+      "8192": {
+        "packs_or_optimizer_steps": 34476,
+        "usable_examples": 514014,
+        "oversized_examples": 4805,
+        "utilization": 0.9956111162192086,
+        "mean_examples_per_pack": 14.909328228332754,
+        "ideal_token_lower_bound": 34325
+      },
+      "12288": {
+        "packs_or_optimizer_steps": 24666,
+        "usable_examples": 516042,
+        "oversized_examples": 2777,
+        "utilization": 0.9942699669406183,
+        "mean_examples_per_pack": 20.921187059109705,
+        "ideal_token_lower_bound": 24525
+      },
+      "16384": {
+        "packs_or_optimizer_steps": 19303,
+        "usable_examples": 516927,
+        "oversized_examples": 1892,
+        "utilization": 0.992679000116967,
+        "mean_examples_per_pack": 26.779619748225663,
+        "ideal_token_lower_bound": 19162
+      },
+      "24576": {
+        "packs_or_optimizer_steps": 13560,
+        "usable_examples": 517734,
+        "oversized_examples": 1085,
+        "utilization": 0.9903796740806677,
+        "mean_examples_per_pack": 38.18097345132743,
+        "ideal_token_lower_bound": 13430
+      },
+      "32768": {
+        "packs_or_optimizer_steps": 10510,
+        "usable_examples": 518093,
+        "oversized_examples": 726,
+        "utilization": 0.9874331400805036,
+        "mean_examples_per_pack": 49.29524262607041,
+        "ideal_token_lower_bound": 10378
+      }
+    },
+    "4096": {
+      "4096": {
+        "packs_or_optimizer_steps": 56351,
+        "usable_examples": 504848,
+        "oversized_examples": 13971,
+        "utilization": 0.9978731028162211,
+        "mean_examples_per_pack": 8.958989192738372,
+        "ideal_token_lower_bound": 56232
+      },
+      "8192": {
+        "packs_or_optimizer_steps": 34404,
+        "usable_examples": 514014,
+        "oversized_examples": 4805,
+        "utilization": 0.9976947111607207,
+        "mean_examples_per_pack": 14.940530170910359,
+        "ideal_token_lower_bound": 34325
+      },
+      "12288": {
+        "packs_or_optimizer_steps": 24601,
+        "usable_examples": 516042,
+        "oversized_examples": 2777,
+        "utilization": 0.9968969962423191,
+        "mean_examples_per_pack": 20.97646437136702,
+        "ideal_token_lower_bound": 24525
+      },
+      "16384": {
+        "packs_or_optimizer_steps": 19225,
+        "usable_examples": 516927,
+        "oversized_examples": 1892,
+        "utilization": 0.996706514395725,
+        "mean_examples_per_pack": 26.888270481144342,
+        "ideal_token_lower_bound": 19162
+      },
+      "24576": {
+        "packs_or_optimizer_steps": 13495,
+        "usable_examples": 517734,
+        "oversized_examples": 1085,
+        "utilization": 0.9951499355712378,
+        "mean_examples_per_pack": 38.36487587995554,
+        "ideal_token_lower_bound": 13430
+      },
+      "32768": {
+        "packs_or_optimizer_steps": 10446,
+        "usable_examples": 518093,
+        "oversized_examples": 726,
+        "utilization": 0.9934828931884064,
+        "mean_examples_per_pack": 49.59726210989852,
+        "ideal_token_lower_bound": 10378
+      }
+    }
+  },
+  "planner_settings": {
+    "planning_buffer_examples_tested": [
+      256,
+      512,
+      1024,
+      2048,
+      4096
+    ],
+    "max_examples_per_pack": null,
+    "best_fit_decreasing": true,
+    "one_pack_per_optimizer_step": true
+  },
+  "runtime_decoded_buffer_memory": {
+    "256": {
+      "windows": 2027,
+      "mean_decoded_waveform_gib": 0.8251873965356288,
+      "max_decoded_waveform_gib": 4.763356775045395
+    },
+    "512": {
+      "windows": 1014,
+      "mean_decoded_waveform_gib": 1.6495609987945952,
+      "max_decoded_waveform_gib": 5.845746837556362
+    },
+    "1024": {
+      "windows": 507,
+      "mean_decoded_waveform_gib": 3.2991219975891903,
+      "max_decoded_waveform_gib": 7.25585375726223
+    },
+    "2048": {
+      "windows": 254,
+      "mean_decoded_waveform_gib": 6.585255325896534,
+      "max_decoded_waveform_gib": 10.299704067409039
+    },
+    "4096": {
+      "windows": 127,
+      "mean_decoded_waveform_gib": 13.170510651793068,
+      "max_decoded_waveform_gib": 17.03730957582593
+    }
+  }
+}

@@ -1,0 +1,2 @@
+EXAMPLE PLACEHOLDER: replace this file with the exact response-expansion prompt.
+The official target would be inserted at: {official_target}

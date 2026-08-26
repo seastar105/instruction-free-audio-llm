@@ -1,0 +1,93 @@
+extends: paraspeech_whisper_lfm2.yaml
+
+run:
+  name: wavcaps-paraspeech-worker-packed-local-regression100-16k
+  output_dir: runs/wavcaps-paraspeech-worker-packed-local-regression100-16k
+  log_every_updates: 1
+  checkpoint_every_updates: 100
+  eval_every_updates: 250
+  keep_last_checkpoints: 1
+
+data:
+  duration_sidecar: reports/mixed_training_durations_exact.parquet
+  require_exact_duration_sidecar: true
+  require_complete_local_shards: true
+  max_bad_samples: 100
+  target_type: audio_assistant_response
+  target_provider: caption_expansion_overlay
+  expansion_decoder_lock: "${ENV:CAPTION_EXPANSION_DECODER_LOCK}"
+  expansion_recipe_sha256: "${ENV:CAPTION_EXPANSION_RECIPE_SHA256}"
+  review_status_allowlist:
+    - unreviewed
+    - accepted
+  training_sources:
+    - dataset: ParaSpeechCaps-Base
+      splits:
+        - train_base
+      expansion_decoder_lock: "${ENV:CAPTION_EXPANSION_DECODER_LOCK}"
+      expansion_recipe_sha256: "${ENV:CAPTION_EXPANSION_RECIPE_SHA256}"
+    - dataset: WavCaps
+      splits:
+        - AudioSet_SL
+        - BBC_Sound_Effects
+        - FreeSound
+        - SoundBible
+      expansion_decoder_lock: "${ENV:WAVCAPS_EXPANSION_DECODER_LOCK}"
+      expansion_recipe_sha256: "${ENV:WAVCAPS_EXPANSION_RECIPE_SHA256}"
+  max_audio_seconds: 30.0
+  long_audio_policy: chunk_pad
+  sample_shuffle: 1024
+  num_workers: 2
+  persistent_workers: true
+  prefetch_factor: 2
+
+prompt:
+  mode: caption_expansion_alignment
+  prompt_file: null
+  system_message: null
+  require_no_system_message: true
+  user_content: audio_sentinel_only
+
+frontend:
+  kind: whisper
+  model_id: openai/whisper-small
+  revision: 973afd24965f72e36ca33b3055d56a652f456b4d
+  mode: official_fixed_30s
+  max_seconds: 30.0
+  chunk_long_audio: true
+  encoder_microbatch_max_padded_samples: 3840000
+
+projector:
+  stack_factor: 4
+
+llm:
+  revision: 0f604ada3f766f9f257460c4c9f0b5d6f69d431b
+
+packing:
+  enabled: true
+  max_lfm_tokens: 16384
+  max_sample_lfm_tokens: 16384
+  planning_buffer_examples: 2048
+  max_examples_per_pack: null
+  oversized_example_policy: skip
+  best_fit_decreasing: true
+  require_boundary_kernel_tests: true
+
+optimization:
+  learning_rate: 0.001
+  min_learning_rate: 0.0001
+  warmup_updates: 5
+  max_updates: 100
+  target_input_tokens_per_update: 16384
+  max_microbatches_per_update: 1
+  torch_compile: true
+  torch_compile_backend: inductor
+  torch_compile_mode: default
+  torch_compile_dynamic: true
+  compile_whisper_encoder: true
+  compile_projector: false
+  compile_lfm_backbone: true
+
+evaluation:
+  validation_max_audio_items: 128
+  generation_examples: 0
