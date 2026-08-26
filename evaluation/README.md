@@ -196,6 +196,11 @@ All scorer denominators include every generated row. Unparseable model answers
 and unparseable judge verdicts score zero; they are never omitted or replaced
 with random/default scores.
 
+MMAU-Pro's reported overall score is the unweighted arithmetic mean of its
+normalized category scores. In the configured scope, open-ended overall judge
+score divided by five and instruction-following success rate each contribute
+50%, regardless of their different row counts.
+
 Never put judge keys in YAML, manifests, prediction files, or shell history.
 
 ## Validation

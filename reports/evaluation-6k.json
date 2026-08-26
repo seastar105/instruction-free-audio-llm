@@ -42,7 +42,7 @@
       "unparseable_counted_as_incorrect": 2106
     },
     "mmau_pro": {
-      "weighted_score": 0.5925140449438202,
+      "average_score": 0.41665002298850573,
       "evaluation_scope": "open_and_instruction_following",
       "evaluated_samples": 712,
       "total_samples": 5305,

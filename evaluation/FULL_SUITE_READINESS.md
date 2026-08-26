@@ -194,8 +194,9 @@ MMAU-Pro's 625 open-ended rubric prompts are judged together with
 instruction-following rows use programmatic NLTK checks. Closed-ended
 NV-Embed evaluation is deliberately omitted and recorded as such in both the
 scoring manifest and result JSON; it is not included in the evaluated-row
-denominator. This phase must not overlap generation or training and does not
-require an API key.
+denominator. The top-line MMAU-Pro score is the unweighted mean of the two
+normalized category scores, not a row-count-weighted mean. This phase must not
+overlap generation or training and does not require an API key.
 
 Every scorer uses the complete generated-row denominator. An unparseable model
 answer is incorrect, and an unparseable judge verdict contributes zero; neither

@@ -31,7 +31,7 @@ requests. The most comparable headline scores are:
 | --- | ---: | ---: | --- |
 | MMAU test-mini | 22.40 | 28.20 | accuracy, % |
 | MMSU | 18.38 | 21.60 | accuracy, % |
-| MMAU-Pro open + instruction following | 59.25 | 67.47 | weighted score, % |
+| MMAU-Pro open + instruction following | 41.67 | 47.34 | category mean, % |
 | MMAR | 25.30 | 25.40 | accuracy, % |
 
 MMAU-Pro closed-ended NV-Embed scoring is intentionally omitted; its table

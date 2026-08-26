@@ -1,5 +1,5 @@
 diff --git a/evaluate_mmau_pro_comprehensive.py b/evaluate_mmau_pro_comprehensive.py
-index 3783a8e..b46f5e6 100644
+index 3783a8e..e5e7730 100644
 --- a/evaluate_mmau_pro_comprehensive.py
 +++ b/evaluate_mmau_pro_comprehensive.py
 @@ -21,8 +21,6 @@ nltk.download('punkt')
@@ -176,7 +176,46 @@ index 3783a8e..b46f5e6 100644
          scores = scores.squeeze()
          
          # Find the choice most similar to the prediction
-@@ -578,6 +640,16 @@ def main():
+@@ -534,16 +596,12 @@ def analyze_by_category(categories, metrics_list):
+     
+     return analysis
+ 
+-def calculate_weighted_performance(category_results):
+-    """Calculate overall weighted performance using preferred metrics for each type"""
+-    total_weighted_score = 0.0
+-    total_samples = 0
++def calculate_average_performance(category_results):
++    """Calculate the unweighted mean of normalized category scores."""
+     category_scores = {}
+     
+     for category, result in category_results.items():
+-        count = result['count']
+-        
+-        # Use preferred performance metric for each type
++        # Use the preferred normalized performance metric for each type.
+         if result['type'] == 'openended':
+             # Use avg_overall score (1-5 scale), normalize to 0-1 for weighting
+             score = result['metrics'].get('avg_overall', 3.0) / 5.0
+@@ -558,12 +616,12 @@ def calculate_weighted_performance(category_results):
+             continue
+         
+         category_scores[category] = score
+-        total_weighted_score += score * count
+-        total_samples += count
+-    
+-    overall_weighted_performance = total_weighted_score / total_samples if total_samples > 0 else 0.0
+-    
+-    return overall_weighted_performance, category_scores
++
++    overall_average_performance = (
++        float(np.mean(list(category_scores.values()))) if category_scores else 0.0
++    )
++
++    return overall_average_performance, category_scores
+ 
+ # ================================
+ # Main Evaluation Function
+@@ -578,6 +636,16 @@ def main():
      parser.add_argument('--model_output_column', 
                         default='model_output',
                         help='Name of the column containing model outputs')
@@ -193,7 +232,7 @@ index 3783a8e..b46f5e6 100644
      args = parser.parse_args()
      
      parquet_file_path = args.parquet_file
-@@ -619,18 +691,26 @@ def main():
+@@ -619,18 +687,26 @@ def main():
      if len(open_df) > 0:
          print(f"Found {len(open_df)} open-ended questions")
          
@@ -228,7 +267,7 @@ index 3783a8e..b46f5e6 100644
          
          # Calculate metrics
          openended_metrics = calculate_openended_metrics(openended_scores)
-@@ -644,10 +724,6 @@ def main():
+@@ -644,10 +720,6 @@ def main():
          print(f"Open-ended evaluation completed: {len(openended_scores)} samples")
          print(f"Average Overall Score: {openended_metrics.get('avg_overall', 0.0):.3f}/5.0")
          
@@ -239,7 +278,7 @@ index 3783a8e..b46f5e6 100644
      else:
          print("No open-ended questions found")
          openended_scores = []
-@@ -703,6 +779,14 @@ def main():
+@@ -703,6 +775,14 @@ def main():
      closed_categories = [cat for cat in df['category'].unique() 
                          if cat not in ['open', 'instruction following']]
      closed_df = df[df['category'].isin(closed_categories)].copy()
@@ -254,7 +293,7 @@ index 3783a8e..b46f5e6 100644
      
      if len(closed_df) > 0:
          print(f"Found {len(closed_df)} closed-ended questions across categories: {closed_categories}")
-@@ -726,7 +810,13 @@ def main():
+@@ -726,7 +806,13 @@ def main():
              
              # Evaluate closed-ended questions
              predictions, confidence_scores = evaluate_closedended_with_nvembed(
@@ -269,7 +308,7 @@ index 3783a8e..b46f5e6 100644
              )
              
              # Calculate metrics overall and by category
-@@ -751,6 +841,7 @@ def main():
+@@ -751,6 +837,7 @@ def main():
              
              # Clean up memory
              del nvembed_model
@@ -277,7 +316,28 @@ index 3783a8e..b46f5e6 100644
              torch.cuda.empty_cache()
          else:
              print("No valid closed-ended questions with choices found")
-@@ -809,6 +900,12 @@ def main():
+@@ -762,9 +849,9 @@ def main():
+         overall_closed_metrics = {}
+     
+     # ================================
+-    # Calculate Weighted Performance
++    # Calculate Unweighted Average Performance
+     # ================================
+-    overall_weighted_performance, category_scores = calculate_weighted_performance(category_results)
++    overall_average_performance, category_scores = calculate_average_performance(category_results)
+     
+     # ================================
+     # Generate Comprehensive Report
+@@ -778,7 +865,7 @@ def main():
+     
+     print(f"Total samples: {total_samples}")
+     print(f"Successfully evaluated: {evaluated_samples}")
+-    print(f"Overall Weighted Performance: {overall_weighted_performance:.4f}")
++    print(f"Overall Average Performance: {overall_average_performance:.4f}")
+     
+     print("\nBREAKDOWN BY CATEGORY:")
+     print("-" * 60)
+@@ -809,9 +896,15 @@ def main():
          'evaluation_summary': {
              'total_samples': total_samples,
              'evaluated_samples': evaluated_samples,
@@ -289,8 +349,18 @@ index 3783a8e..b46f5e6 100644
 +            ),
              'parquet_file': parquet_file_path,
              'model_output_column': model_output_column,
-             'overall_weighted_performance': overall_weighted_performance
-@@ -848,7 +945,10 @@ def main():
+-            'overall_weighted_performance': overall_weighted_performance
++            'overall_average_performance': overall_average_performance
+         },
+         'category_results': {}
+     }
+@@ -843,17 +936,20 @@ def main():
+     print(f"\nResults saved to '{output_filename}'")
+     print("\nEvaluation completed successfully!")
+     print(f"\n🎯 SUMMARY:")
+-    print(f"   Overall Weighted Performance: {overall_weighted_performance:.4f}")
++    print(f"   Overall Average Performance: {overall_average_performance:.4f}")
+     print(f"   Total Samples Evaluated: {evaluated_samples}/{total_samples}")
      print("\nNOTE: This comprehensive evaluation requires:")
      print("- Qwen 2.5 LLM judge for open-ended questions (no fallback)")
      print("- Format constraint checking for instruction following") 
@@ -302,4 +372,10 @@ index 3783a8e..b46f5e6 100644
      print("\nPerformance metric per category:")
      print("- Open-ended: LLM overall score / 5.0 (continuous quality assessment)")
      print("- Instruction following: Success rate (binary constraint satisfaction)")
+     print("- Closed-ended: Classification accuracy (exact match rate)")
+-    print("- Overall metric is weighted by sample count per category")
++    print("- Overall metric is the unweighted mean of category performance scores")
+ 
+ if __name__ == "__main__":
+     main()
 

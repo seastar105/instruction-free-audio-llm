@@ -73,7 +73,7 @@ HTTP requests and the same sampling recipe as response expansion:
 | --- | ---: | ---: | --- |
 | MMAU public test-mini | 22.40 | 28.20 | accuracy, % |
 | MMSU | 18.38 | 21.60 | accuracy, % |
-| MMAU-Pro open + instruction following | 59.25 | 67.47 | weighted score, % |
+| MMAU-Pro open + instruction following | 41.67 | 47.34 | category mean, % |
 | MMAR | 25.30 | 25.40 | accuracy, % |
 | KMMAU | 39.02 | 39.20 | sample-weighted accuracy, % |
 
@@ -94,12 +94,12 @@ sample count, generation parameter, judge identity, score scale, and omission.
 Unparseable model responses and unparseable judge verdicts were retained in the
 full denominator and scored zero.
 
-MMAU-Pro closed-ended NV-Embed scoring was omitted by request, so its weighted
-number covers 625 open-ended plus 87 instruction-following rows, not all 5,305
-rows. VoiceBench SD-QA PANDA was omitted because the upstream dependency fetches
-mutable pickle files; its safe GPT metric was run and scored 0.0. These partial
-metrics should not be compared with a complete official aggregate without the
-same scope.
+MMAU-Pro closed-ended NV-Embed scoring was omitted by request, so its category
+mean covers the open-ended and instruction-following category scores equally,
+not all 5,305 rows. VoiceBench SD-QA PANDA was omitted because the upstream
+dependency fetches mutable pickle files; its safe GPT metric was run and scored
+0.0. These partial metrics should not be compared with a complete official
+aggregate without the same scope.
 
 ## vLLM usage
 

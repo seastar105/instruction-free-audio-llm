@@ -120,7 +120,7 @@ def _mmau_pro(run: Path) -> dict[str, Any]:
     )
     summary = payload["evaluation_summary"]
     return {
-        "weighted_score": summary["overall_weighted_performance"],
+        "average_score": summary["overall_average_performance"],
         "evaluation_scope": summary["evaluation_scope"],
         "evaluated_samples": summary["evaluated_samples"],
         "total_samples": summary["total_samples"],
